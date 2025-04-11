@@ -1,13 +1,13 @@
-# Your Code As A Crime Scene
+# Your Code as a Crime Scene
 
-Here's my notes about the [book](https://pragprog.com/titles/atcrime/your-code-as-a-crime-scene/) written by Adam Tornhill.  
+Here are my notes about the [book](https://pragprog.com/titles/atcrime/your-code-as-a-crime-scene/) written by Adam Tornhill.  
 I am not the author of most of the content available on this repository. I've only regrouped on a single repository every resource I needed to follow the book.  
 
 _Note_: every command prompt describe here must be executed on a bash command line.  
 
 -----
 
-## Chapter 1 : Welcome!
+## Chapter 1: Welcome!
 
 Tools needed for the examples (more details [here](https://adamtornhill.com/code/crimescenetools.htm)):
 
@@ -16,11 +16,11 @@ Tools needed for the examples (more details [here](https://adamtornhill.com/code
 - [Python](https://www.python.org/)
 
 `scripts` folder contains python scripts for log analysis.  
-`sample` folder contains various samples analysed all along the book.  
+`sample` folder contains various samples analyzed all along the book.  
 
 -----
 
-## Chapter 2 : Code as a Crime Scene
+## Chapter 2: Code as a Crime Scene
 
 Tool: [Code city](http://wettel.github.io/codecity.html)  
 Each block is a package, each building a class. The height of a building is defined by the number of methods, and the base by the number of attributes.  
@@ -32,9 +32,9 @@ By correlating those two dimensions (size of a class and how often it changes), 
 
 -----
 
-## Chapter 3 : Creating an Offender Profile
+## Chapter 3: Creating an Offender Profile
 
-On this chapter, we run our first analysis on Code-Maat's source code.  
+In this chapter, we run our first analysis of Code-Maat's source code.  
 
 ### Extracting data from repository
 
@@ -45,7 +45,7 @@ On this chapter, we run our first analysis on Code-Maat's source code.
 ### Automated mining with Code Maat  
 
 - Mining logs:  `git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --before=2013-11-01 > maat_evo.log`
-- data first inspection (evaluating number of changes): `maat -l maat_evo.log -c git -a summary`
+- data first inspection (evaluating the number of changes): `maat -l maat_evo.log -c git -a summary`
 
 ```csv
 statistic,value
@@ -55,7 +55,7 @@ number-of-entities-changed,283
 number-of-authors,2
 ```
 
-- change fequency analysis: `maat -l maat_evo.log -c git -a revisions > maat_freqs.csv`
+- change frequency analysis: `maat -l maat_evo.log -c git -a revisions > maat_freqs.csv`
 
 ```csv
 entity,n-revs
@@ -71,7 +71,7 @@ src/code_maat/parsers/git.clj,14
 
 ### Add the Complexity Dimension
 
-Here, we're about to extract the number of lines of code as a complexity metric. As highlighted by the author, that metric is just as bad as any others. He chose it for now because it's langage agnostic and easy to extract.  
+Here, we're about to extract the number of lines of code as a complexity metric. As highlighted by the author, that metric is just as bad as any others. He chose it for now because it's language agnostic and easy to extract.  
 
 Tool used for counting lines of code: [Cloc](https://sourceforge.net/projects/cloc/).  
 Extracting number of lines of code: `cloc ./ --by-file --csv --quiet --report-file=maat_lines.csv`
@@ -104,7 +104,7 @@ src\code_maat\parsers\git.clj,14,31
 
 -----
 
-## Chapter 4 : Analyze Hotspots in Large-Scale Systems
+## Chapter 4: Analyze Hotspots in Large-Scale Systems
 
 ### Clone Hibernate Repository
 
@@ -113,8 +113,8 @@ src\code_maat\parsers\git.clj,14,31
 
 ### Generate a Version-Control log
 
-- Mining logs (note this time we also set a begining date to limit the scope we want to analyze): `git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --before=2013-09-05 --after=2012-01-01 > hib_evo.log`
-- Genreate evolutions log: `maat -l hib_evo.log -c git -a summary`
+- Mining logs (note this time we also set a beginning date to limit the scope we want to analyze): `git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --before=2013-09-05 --after=2012-01-01 > hib_evo.log`
+- Generate evolution log: `maat -l hib_evo.log -c git -a summary`
 
 ### Choose a Timespan for your analyses
 
@@ -124,43 +124,43 @@ src\code_maat\parsers\git.clj,14,31
 
 ### Mining Hibernate
 
-Proceed as we did for Code Maat (Chapter 3), extract frequencies, the number of line of code, then merge both:  
+Proceed as we did for Code Maat (Chapter 3), extract frequencies, the number of lines of code, then merge both:  
 
-- Change fequency analysis: `maat -l hib_evo.log -c git -a revisions > hib_freqs.csv`
+- Change frequency analysis: `maat -l hib_evo.log -c git -a revisions > hib_freqs.csv`
 - Extracting number of lines of code: `cloc ./ --by-file --csv --quiet --report-file=hib_lines.csv`
 - Merging: `python scripts/merge_comp_freqs.py hib_freqs.csv hib_lines.csv`  
 
 ### Explore the Visualization
 
 The circle-packing visualization is from [D3.js](http://d3js.org), it's using the [Zoomable Circle Packing](http://bl.ocks.org/mbostock/7607535) algorithm.  
-_Note_: this is just one tool among others, the author also highligts:
+_Note_: this is just one tool among others, the author also highlights:
 
 - Spreadsheets: an easy way to exploit CSV outputs.
-- [R programming langage](http://r-project.org): a langage designed for statistical computation and data visualization.
+- [R programming language](http://r-project.org): a language designed for statistical computation and data visualization.
 
 Here we'll be looking at a prepared example; To launch hotspots visualization:
 
 - Go into the `sample\hibernate` directory
-- To avoid some security restriction issues on your browser, you have to run `python -m SimpleHTTPServer 8888` or `python -m http.server 8888` depending of your Python's version.  
+- To avoid some security restriction issues on your browser, you have to run `python -m SimpleHTTPServer 8888` or `python -m http.server 8888` depending on your Python's version.  
 - Then open `http://localhost:8888/hibzoomable.html`
 
 To transform Code Maat's CSV output into a Json for D3.js, use: `python csv_as_enclosure_json.py -h`
 
 -----
 
-## Chapter 5 : Judge Hotspots with the Power of Names
+## Chapter 5: Judge Hotspots with the Power of Names
 
 For cognitive reasons, we put names on things to reduce the load and still express complex concepts: this is called chunking.  
 Names can be good indicators to identify hotspots: are they descriptive (ex: `TcpListener`) or clumsy (ex: `StateManager`)?  
-Combined with change frequency and number of lines of code, names can help us reducing the number of potential offenders.  
-The author highlight this as an heuristic, it's not perfect and you can still have false positives.  
+Combined with change frequency and number of lines of code, names can help us reduce the number of potential offenders.  
+The author highlight this as a heuristic, it's not perfect and you can still have false positives.  
 
 -----
 
-## Chapter 6 : Calculate Complexity Trends from Your Code's Shape
+## Chapter 6: Calculate Complexity Trends from Your Code's Shape
 
-Finding hotspot and acting on them may require several passes, so we need to look at the evolution of the code.  
-Here we'll be using code's shape via indentation to mesure hotspots complexity and trends over time. Heavy indentation might highlight complex conditionnal flows.  
+Finding hotspots and acting on them may require several passes, so we need to look at the evolution of the code.  
+Here we'll be using code shape via indentation to measure hotspots complexity and trends over time. Heavy indentation might highlight complex conditional flows.  
 
 ### Whitespace analysis of complexity
 
@@ -172,9 +172,9 @@ n,total,mean,sd,max
 3335,8204.25,2.46,1.6,14.25
 ```
 
-### Analyze Compexity Trends in Hotspots
+### Analyze Complexity Trends in Hotspots
 
-[Manny Lehman](https://en.wikipedia.org/wiki/Manny_Lehman_%28computer_scientist%29)['s laws of software evolution](https://en.wikipedia.org/wiki/Lehman%27s_laws_of_software_evolution): the more you change the code and add feature, the more code's complexity increases unless specific work is done to reduce it.  
+[Manny Lehman](https://en.wikipedia.org/wiki/Manny_Lehman_%28computer_scientist%29)['s laws of software evolution](https://en.wikipedia.org/wiki/Lehman%27s_laws_of_software_evolution): the more you change the code and add features, the more code's complexity increases unless specific work is done to reduce it.  
 
 Now, to analyze complexity trends over a period:
 `python scripts/git_complexity_trend.py --start ccc087b --end 46c962e --file hibernate-core/src/main/java/org/hibernate/cfg/Configuration.java`  
@@ -192,34 +192,34 @@ fa1183f3f9,3101,7783.75,2.51,1.73
 Then you can use the spreadsheet of your choice to visualize trends with graphs.  
 
 When total complexity increases, it can mean more indentation (and complexity) or more lines of code.  
-Standard deviation (sd column) describes code consitency, the lower the better.  
+Standard deviation (sd column) describes code consistency, the lower the better.  
 For a high total complexity, a low standard deviation means a lot of code and a low overall complexity. Mean should return a similar trend.  
 
-Complexity trend can be:  
+Complexity trends can be:  
 
-- Increasing: That's a waring sign
+- Increasing: That's a warning sign
 - Decreasing: Some refactoring have been done to reduce complexity
 - Stable: few modifications other time
 
 -----
 
-## Chapter 7 : Treat Your Code As a Cooperative Witness
+## Chapter 7: Treat Your Code as a Cooperative Witness
 
 Now, we're looking at high-level design of the system, we're chasing hidden dependencies and learning the concept of _temporal coupling_.  
 
 Human brain suffers from a lot biases, the way you're asked some questions may result in different answers as the question influence memory access and associations, and even create false memories.  
 That's why we need to extract real evolution of the code from the code base and our source control tools.  
 
-You have _temporal coupling_ when modules change together, note that those modules may not have a static dependency visible through the compiler.  
+You have _temporal coupling_ when modules change together. Note that those modules may not have a static dependency visible through the compiler.  
 
 -----
 
-## Chapter 8 : Detect Architectural Decay
+## Chapter 8: Detect Architectural Decay
 
 ### Analyze Temporal Coupling
 
-Sum of Coupling: looking at how many times a module has been coupled to anothers in a commit and sums it up.  
-Mesure the Sum of Coupling: `maat -l maat_evo.log -c git -a soc`  
+Sum of Coupling: looking at how many times a module has been coupled to others in a commit and sums it up.  
+Measure the Sum of Coupling: `maat -l maat_evo.log -c git -a soc`  
 
 ```csv
 entity,soc
@@ -232,7 +232,7 @@ src/code_maat/parsers/svn.clj,67
 ...
 ```
 
-Mesure the Temporal Coupling: `maat -l maat_evo.log -c git -a coupling`  
+Measure Temporal Coupling: `maat -l maat_evo.log -c git -a coupling`  
 
 ```csv
 entity,coupled,degree,average-revs
@@ -249,28 +249,28 @@ src/code_maat/app/app.clj,src/code_maat/core.clj,60,23
 The output is composed of:  
 
 - entity: the coupled module
-- coupled: the couterpart module
+- coupled: the counterpart module
 - degree: the percentage of shared commits where these modules are coupled  
 - average-revs: a weighted number of total revisions for these modules
 
-_Note_: you can have a high average-revs and a low degree, it means there's a lot of revisions, but only few are shared by the two modules. At the oposite, high degree and low average-revs means a strong coupling but stable modules.  
+_Note_: you can have a high average-revs and a low degree, it means there's a lot of revisions, but only few are shared by the two modules. At the opposite, high degree and low average-revs means a strong coupling but stable modules.  
 
 Suggested tool: [Evolution Radar](http://www.inf.usi.ch/phd/dambros/tools/evoradar.php)
 
-Yet, Temporal Coupling suffers from limitations and biases. The code base may be maintained by several teams, including a timespan to measure coupling might be necessary (see chapter 12). Also, some important coupling occurs between commits, then you have to dig into the code. Finally, renaming module resets counters when using Code Maat, it can sounds problematic, but it's also a good signal that some refactoring happened.  
+Yet, Temporal Coupling suffers from limitations and biases. The code base may be maintained by several teams, including a timespan to measure coupling might be necessary (see chapter 12). Also, some important coupling occurs between commits, then you have to dig into the code. Finally, renaming module reset counters when using Code Maat, it can sound problematic, but it's also a good signal that some refactoring happened.  
 
 ### Catch Architectural Decay
 
-[Manny Lehman](https://en.wikipedia.org/wiki/Manny_Lehman_%28computer_scientist%29) also expressed another law: it states a program that is used _undergoes continual change or becomes progressively less used_.  
+[Manny Lehman](https://en.wikipedia.org/wiki/Manny_Lehman_%28computer_scientist%29) also expressed another law: it states program that is used _undergoes continual change or becomes progressively less used_.  
 
 We're going to use a new repo for the analysis.  
 Clone the repo: `git clone https://github.com/SirCmpwn/Craft.Net.git`  
 Extract logs: `git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --before=2014-08-08 > craft_evo_complete.log`  
-Mesure the Sum of Coupling: `maat -l craft_evo_complete.log -c git -a soc`  
+Measure the Sum of Coupling: `maat -l craft_evo_complete.log -c git -a soc`  
 
-First module observed, _MinecraftServer_ seems to have a lot of coupling. We're going to run a trend analysis on this module.  
+The first module observed, _MinecraftServer_ seems to have a lot of couplings. We're going to run a trend analysis on this module.  
 
-First activity for this module is in 2012, so we extract logs for first year as a first period: `git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --before=2013-01-01 > craft_evo_130101.log`  
+First activity for this module is in 2012, so we extract logs for the first year as a first period: `git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --before=2013-01-01 > craft_evo_130101.log`  
 Then we run a temporal coupling analysis: `maat -l craft_evo_130101.log -c git -a coupling > craft_coupling_130101.csv`  
 
 Then we repeat this process for a period over 2013 to 2014:  
@@ -283,23 +283,23 @@ We can now open both csv into a spreadsheet app and remove everything not couple
 ### React to Structural Trends
 
 Now we can use the enclosure diagram (see chapter 4) and compare visually results.  
-Dependencies that are close to eachothers isn't an issue, we're looking for temporal coupling across (package/project) boundaries, with modules on distant parts of the system.  
+Dependencies that are close to each other isn't an issue, we're looking for temporal coupling across (package/project) boundaries, with modules on distant parts of the system.  
 You can run such an analysis as a routine on your project (each iteration for example) and spot early decays.  
 
 -----
 
-## Chapter 9 : Build a Safety Net for Your Architecture
+## Chapter 9: Build a Safety Net for Your Architecture
 
 ### Know What's in an Architecture
 
 Automated tests act as a safety net for the software, it's supposed to allow developers to modify the software and ensure there's no regression.  
-But tests create dependencies with the tested code, so we have to choose those dependencies carefully. The author argues that automated tests should be considered like any other module of the system and designed with the same attention.  
+But tests create dependencies with tested code, so we have to choose those dependencies carefully. The author argues that automated tests should be considered like any other module of the system and designed with the same attention.  
 
-### Analyse the Evolution on a Sytem Level
+### Analyze the Evolution of a System Level
 
-We've looked at _temporal coupling_ between invdividual modules, now we're focusing on system boundaries between production code and automated tests.  
+We've looked at _temporal coupling_ between individual modules, now we're focusing on system boundaries between production code and automated tests.  
 
-To specify to Code Maat production and test code, we've to specify a _transformation_.  
+To specify to Code Maat production and test code, we have to specify a _transformation_.  
 Create a file `maat_src_test_boundaries.txt` in the repository root, then type in:  
 
 ```text
@@ -325,15 +325,15 @@ test/code_maat/end_to_end => End to end Test
 test/code_maat/parsers => Parsers Test
 ```  
 
-Then re-run the analysis.  
+Then rerun the analysis.  
 
-On this example, Analysis & Parsers tests are unit tests, they change aproximatively 40% of the time with the code. That sounds reasonable. Datastet isn't displayed has its numbers are below the default threshold.  
+In this example, Analysis & Parser tests are unit tests, they change approximately 40% of the time with the code. That sounds reasonable. Dataset isn't displayed has its numbers are below the default threshold.  
 End to end tests also changes 40% of the time, but they're supposed to be more stable. That's a bad signal.  
 In this specific case, the author explains he changed several times the output format, but didn't encapsulate it as an implementation detail. So every time he made a change, he had to modify the end to end tests.  
 
 ### Create a Safety Net for Your Automated Tests
 
-You can monitor revisions for each boundaries: `maat -l maat_evo.log -c git -a revisions -g maat_src_test_boundaries.txt`  
+You can monitor revisions for each boundary: `maat -l maat_evo.log -c git -a revisions -g maat_src_test_boundaries.txt`  
 By collecting several sample points, we can start to see trends. We can also observe the evolution of code/test change ratio.  
 Every time the ratio evolves to a high test changes, run coupling and hotspot analysis to help you understand the problem.  
 
@@ -341,7 +341,7 @@ We can also spot clusters of tests that change together, it's a sign that some t
 
 -----
 
-## Chapter 10 : Use Beauty as a Guiding Principle
+## Chapter 10: Use Beauty as a Guiding Principle
 
 ### Learn Why Attractiveness Matters
 
@@ -356,7 +356,7 @@ This principle also applies at the architecture level, and is even more importan
 
 ### Avoid Surprises in Your Architecture
 
-Code Maat is build following the _Pipes and Filters_ pattern, so we should expect a low temporal coupling between filters.  
+Code Maat is built following the _Pipes and Filters_ pattern, so we should expect a low temporal coupling between filters.  
 
 In a file `maat_pipes_filters_boundaries.txt`:  
 
@@ -370,15 +370,15 @@ src/code_maat/app => Application
 The perform the temporal coupling analysis: `maat -l maat_evo.log -c git -a coupling -g maat_pipes_filters_boundaries.txt`  
 
 Result doesn't highlight any strong coupling between filters, but two of them are coupled to the _Application_ component.  
-The reason is: _Application_ contains conditionnal logic to choose the parsers and the analysis to execute. It could be a problem as the software can grow with more options.  
+The reason is: _Application_ contains conditional logic to choose the parsers and the analysis to execute. It could be a problem as the software can grow with more options.  
 
 ### Analyze Layered Architectures
 
-The transformation file doesn't have to mirror code stucture. You can ignore minor utility modules and try to focus on what can break your target architecture.  
+The transformation file doesn't have to mirror code structure. You can ignore minor utility modules and try to focus on what can break your target architecture.  
 
-New study case with [NopCommerce](www.nopcommerce.com) open source product. It's build with a MVC pattern.  
+New study case with [NopCommerce](www.nopcommerce.com) open source product. It's built with an MVC pattern.  
 
-### Find Surpring Change Patterns
+### Find Surprising Change Patterns
 
 Clone the new repo: `git clone https://github.com/nopSolutions/nopCommerce.git`  
 Then extract logs: `git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --after=2014-01-01 --before=2014-09-25 > nop_evo_2014.log`  
@@ -419,11 +419,11 @@ It shows us that the _Service_ layer is the most volatile, and temporal coupling
 ### Expand Your Analyses
 
 You can now use _Temporal Coupling_ as a early warning system. Define the rules you want to protect, then run the analysis on a regular basis.  
-If the trend evoles in an unexpected way, run a hotspots analysis to investigate.  
+If the trend evolves in an unexpected way, run a hotspot analysis to investigate.  
 
 -----
 
-## Chapter 11 : Norms, Groups, and False Serial Killers
+## Chapter 11: Norms, Groups, and False Serial Killers
 
 Social interactions and team organization are as influent as software architecture for producing bugs and decay.  
 
@@ -445,17 +445,17 @@ Social biases are hard to avoid, the best ways to do so are:
 - talk to people
 - use data to support decisions
 
-If you're in a leadership position, there are additionnal solutions:  
+If you're in a leadership position, there are additional solutions:  
 
 - use an outside expert to review decisions
 - let subgroups work independently on the same problem
 - avoid advocating a specific solution early in the discussions
-- discuss worst-case scenarios and build team risk awareness
+- discuss worst-case scenarios and build teams risk awareness
 - plan a second meeting to reconsider decisions made on the first one
 
 All those strategies are useful to avoid _groupthink_. _Groupthink_ is when a group has suppressed all internal forms of dissent, it leads groups suffering from a false sense of consensus, ignoring alternatives and risks.  
 
-### Witness Groupthing in Action
+### Witness Groupthink in Action
 
 Some workshops like brainstorming are supposed to promote high group creativity. The reality is: they generate a lot of social biases and tend to produce less creative groups than expected.  
 
@@ -466,13 +466,13 @@ Every team as its own way to work. Even if it can't be observed clearly, using c
 To extract only commit logs: `git log --pretty='%s'`  
 You can then use tools to visualize them with clouds representations, [here](https://monkeylearn.com/blog/word-visualization/) some examples.  
 
-The more a word is present, the more the team is doing it. You can potentially double check your discoveries with a _temporal coupling_ analysis.  
+The more a word is present, the more the team is doing it. You can potentially double-check your discoveries with a _temporal coupling_ analysis.  
 
-**Friendly reminder**: these kind of analysis is tools made to understand and support decisions, it doesn't replace real discussions and team interactions.  
+**Friendly reminder**: these kinds of analysis is tools made to understand and support decisions, it doesn't replace real discussions and team interactions.  
 
 -----
 
-## Chapter 12 : Discover Organizational Metrics in Your Codebase
+## Chapter 12: Discover Organizational Metrics in Your Codebase
 
 ### Let's Work in the Communication Business
 
@@ -503,7 +503,7 @@ The result is the modules with the number of authors and revisions.
 A study on Windows Vista's code shows that organizational structure add a huge impact on the overall code quality.  
 The number of authors was one social metric, and it outperformed technical metrics such as code complexity or coverage to predict defects.  
 
-### Mesure Temporal Coupling over Organizational Boundaries
+### Measure Temporal Coupling over Organizational Boundaries
 
 If a module is highlighted by both _hotspot_ and _authors_ analysis, then we're facing a piece of code that is probably tricky and affects most developers: a good candidate for some rework!  
 
@@ -547,7 +547,7 @@ buildSrc/build.gradle,Strong Liu,8,15,0.53
 ```
 
 We can now identify the main developer and his degree of ownership of both the hotspot and the modules it's coupled to.  
-If those modules are all "owned" by the same person with a strong ownership, then it's ok from the organizational point of view. If it's "owned" by different people, we should consider several things: Are they on the same team? At the office or remotely? On the same time zone?  
+If those modules are all "owned" by the same person with a strong ownership, then it's OK from the organizational point of view. If it's "owned" by different people, we should consider several things: Are they on the same team? At the office or remotely? At the same time zone?  
 
 To calculate individual contributions: `maat -l hib_evo.log -c git -a entity-ownership`  
 
@@ -585,12 +585,12 @@ The latest step can be achieved by either changing the organizational structure 
 
 -----
 
-## Chapter 13 : Build a Knowledge Map of Your System
+## Chapter 13: Build a Knowledge Map of Your System
 
 ### Know Your Knowledge Distribution
 
-In previous chapter we've identified authors of a module and measured ownership metrics to identify who may old the most knowledge of this module.  
-But this metric doesn't tell us if there is one main contributor or several ones who maintain overall consistency of the module.  
+In previous chapter we've identified authors of a module and measured ownership metrics to identify who may hold the most knowledge of this module.  
+But this metric does not tell us if there is one main contributor or several ones who maintain overall consistency of the module.  
 To do so, we have to measure individual contributions: `maat -l hib_evo.log -c git -a entity-effort`  
 
 ```csv
@@ -612,7 +612,7 @@ To improve visualization of the result, we can use some [fractal figures](https:
 
 You can then observe three different patterns:
 
-- Single developer: Easiest pattern, the quality depends only on the expertise of the developer.
+- A single developer: Easiest pattern, the quality depends only on the expertise of the developer.
 - Multiple, balanced developers: Few developers with a clear ownership of one of them. The more ownership, the fewer defects in the code and better quality.
 - Collective chaos: A lot of minor contributors, this is a strong predictor of defects.
 
@@ -621,7 +621,7 @@ Here we've got an example of modules, we can run the same analysis at the archit
 ### Grow Your Mental Maps
 
 We can build a map with modules and associated main contributors.  
-In the scala sample directory:
+In the Scala sample directory:
 
 - Run `python -m http.server 8888`  
 - Then open `http://localhost:8888/scala_knowledge.html`
@@ -651,9 +651,9 @@ We can now use d3.js to visualize the result (replace in the _scala_knowledge.ht
 
 ### Visualize Knowledge Loss
 
-Documentation, reviews, etc, can't replace the intricate knowledge of working on a piece of code. That's why the number of ex-developers who worked on a component is a good predictor of the number of post-release defects.  
+Documentation, reviews, etc., can't replace the intricate knowledge of working on a piece of code. That's why the number of ex-developers who worked on a component is a good predictor of the number of post-release defects.  
 
-In the scala repository, we know that Paul Phillips was a main contributor who chose to leave.  
+In the Scala repository, we know that Paul Phillips was a main contributor who chose to leave.  
 Let's identify the abandoned code:  
 
 - Create a new `scala_ex_programmers.csv` with content
@@ -663,17 +663,17 @@ author,color
 Paul Phillips,green
 ```
 
-- Generate the json visualization:  `python scripts/csv_main_dev_as_knowledge_json.py --structure scala_lines.csv --owners scala_main_devs.csv --authors scala_ex_programmers.csv > scala_knowledge_loss.json`  
+- Generate json visualization:  `python scripts/csv_main_dev_as_knowledge_json.py --structure scala_lines.csv --owners scala_main_devs.csv --authors scala_ex_programmers.csv > scala_knowledge_loss.json`  
 
 Now we can visualize every "abandoned" piece of code as the result of Paul's leaving as they appear in green.  
 
 -----
 
-## Chapter 14 : Dive Deeper with Code Churn
+## Chapter 14: Dive Deeper with Code Churn
 
 ### Cure the Disease, Not the Symptoms
 
-Parallel work is an issue if it occurs on the same modules, merging can be more time consuming than the initial work.  
+Parallel work is an issue if it occurs in the same modules, merging can be more time consuming than the initial work.  
 Code churn refers to a family of measures indicating the rate at which code evolves.  
 
 ### Discover Your Process Loss from Code
@@ -741,7 +741,7 @@ Code churn also has its limitations:
 
 -----
 
-## Chapter 15 : Toward the Future
+## Chapter 15: Toward the Future
 
 ### Let Your Questions Guide Your Analysis
 
@@ -767,11 +767,11 @@ Adapt your practices and/or tools to support pair programming.
 
 -----
 
-## Appendix : Refactoring Hotspots
+## Appendix: Refactoring Hotspots
 
 Small increments is the safest way to improve a design, it allows experimentation and rollbacks.  
 Group functions by tasks will improve cohesion and readability.  
 
-_Wishful thinking_: defer data representation and imagine you have all the functions you need to solve the problem the simplest possible way. It's then about experimentation.  
+_Wishful thinking_: defer data representation and imagine you have all the functions you need to solve the problem in the simplest possible way. It's then about experimentation.  
 
-Do not hesitate to turn off syntax highlighting to avoid distraction during such experimentations.  
+To avoid distraction, do not hesitate to turn off syntax highlighting during such experimentations.  
